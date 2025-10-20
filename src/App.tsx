@@ -11,6 +11,7 @@ import HistoryPage from './pages/HistoryPage';
 import SupportPage from './pages/SupportPage';
 import EventsPage from './pages/EventsPage';
 import TeamSearchPage from './pages/TeamSearchPage';
+import UpcomingMatchesPage from './pages/UpcomingMatchesPage';
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { user, loading } = useAuth();
@@ -121,6 +122,14 @@ function AppRoutes() {
         element={
           <ProtectedRoute>
             <TeamSearchPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/dashboard/upcoming-matches"
+        element={
+          <ProtectedRoute>
+            <UpcomingMatchesPage />
           </ProtectedRoute>
         }
       />

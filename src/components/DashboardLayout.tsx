@@ -29,11 +29,11 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
 
   const navItems = [
     { icon: Home, label: 'Dashboard', path: '/dashboard' },
+    { icon: Calendar, label: 'Upcoming Matches', path: '/dashboard/upcoming-matches' },
     { icon: TrendingUp, label: 'Predictions', path: '/dashboard/predictions' },
     { icon: Search, label: 'Team Search', path: '/dashboard/team-search' },
     { icon: Coins, label: 'Tokens', path: '/dashboard/tokens' },
     { icon: BarChart3, label: 'History', path: '/dashboard/history' },
-    { icon: Calendar, label: 'Events', path: '/dashboard/events' },
     { icon: LifeBuoy, label: 'Support', path: '/dashboard/support' },
   ];
 
