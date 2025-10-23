@@ -60,7 +60,6 @@ export interface Match {
   away_odds: number;
   status: MatchStatus;
   actual_result?: MatchResult;
-  external_id?: string | null;
   created_at: string;
   updated_at: string;
 }
@@ -68,18 +67,11 @@ export interface Match {
 export interface Prediction {
   id: string;
   user_id: string;
-  match_id: string | null;
+  match_id: string;
   predicted_result: MatchResult;
   confidence: number;
   token_used?: string;
   is_correct?: boolean;
-  result_status?: string;
-  home_team?: string;
-  away_team?: string;
-  league?: string;
-  home_odds?: number;
-  draw_odds?: number;
-  away_odds?: number;
   created_at: string;
   match?: Match;
 }

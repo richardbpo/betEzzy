@@ -1,10 +1,8 @@
-'use client';
-
-
 import { useEffect, useState } from 'react';
 import { CheckCircle, XCircle, Clock, AlertCircle } from 'lucide-react';
-import { useAuth } from '@/contexts/AuthProvider';
-import { supabase } from '@/lib/supabase-client';
+import { useAuth } from '../contexts/AuthContext';
+import { supabase } from '../lib/supabase';
+import DashboardLayout from '../components/DashboardLayout';
 
 interface PredictionWithUser {
   id: string;
@@ -94,7 +92,8 @@ export default function AdminPredictionsPage() {
 
   if (profile?.role !== 'system_admin' && profile?.role !== 'manager') {
     return (
-      <div>
+      <DashboardLayout>
+        <div className="max-w-4xl mx-auto">
           <div className="bg-red-50 dark:bg-red-900/20 border border-red-500/50 rounded-xl p-6 text-center">
             <AlertCircle className="w-12 h-12 text-red-500 mx-auto mb-3" />
             <h2 className="text-xl font-bold text-red-700 dark:text-red-400 mb-2">Access Denied</h2>
@@ -102,12 +101,14 @@ export default function AdminPredictionsPage() {
               You need admin privileges to access this page.
             </p>
           </div>
-      </div>
+        </div>
+      </DashboardLayout>
     );
   }
 
   return (
-    <div className="space-y-6">
+    <DashboardLayout>
+      <div className="max-w-7xl mx-auto space-y-6">
         <div>
           <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
             Manage Predictions
@@ -274,6 +275,7 @@ export default function AdminPredictionsPage() {
             </div>
           )}
         </div>
-    </div>
+      </div>
+    </DashboardLayout>
   );
 }

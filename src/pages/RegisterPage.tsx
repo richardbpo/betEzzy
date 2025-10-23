@@ -1,11 +1,7 @@
-'use client';
-
-
 import { useState } from 'react';
-import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { Link, useNavigate } from 'react-router-dom';
 import { Trophy, Mail, Lock, User, Phone, MapPin, AlertCircle, CheckCircle } from 'lucide-react';
-import { useAuth } from '@/contexts/AuthProvider';
+import { useAuth } from '../contexts/AuthContext';
 
 const COUNTRIES = ['Uganda', 'Kenya', 'Tanzania', 'Rwanda', 'Congo', 'Burundi'];
 
@@ -23,7 +19,7 @@ export default function RegisterPage() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const { signUp } = useAuth();
-  const router = useRouter();
+  const navigate = useNavigate();
 
   const handleInputChange = (field: string, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
@@ -75,7 +71,7 @@ export default function RegisterPage() {
         country: formData.country,
       });
       setStep(3);
-      setTimeout(() => router.push('/login'), 2000);
+      setTimeout(() => navigate('/login'), 2000);
     } catch (err: any) {
       setError(err.message || 'Failed to create account');
     } finally {
@@ -103,7 +99,7 @@ export default function RegisterPage() {
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center p-4">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
-          <Link href="/" className="inline-flex items-center space-x-2 mb-4">
+          <Link to="/" className="inline-flex items-center space-x-2 mb-4">
             <div className="bg-beteasy-lime p-3 rounded-2xl">
               <Trophy className="w-8 h-8 text-white" />
             </div>
@@ -283,7 +279,7 @@ export default function RegisterPage() {
           <div className="mt-6 text-center">
             <p className="text-gray-600 text-sm">
               Already have an account?{' '}
-              <Link href="/login" className="text-beteasy-lime hover:text-beteasy-lime-dark font-semibold">
+              <Link to="/login" className="text-beteasy-lime hover:text-beteasy-lime-dark font-semibold">
                 Sign in
               </Link>
             </p>
@@ -291,7 +287,7 @@ export default function RegisterPage() {
         </div>
 
         <div className="text-center mt-6">
-          <Link href="/" className="text-gray-600 hover:text-gray-900 text-sm transition-colors">
+          <Link to="/" className="text-gray-600 hover:text-gray-900 text-sm transition-colors">
             ← Back to home
           </Link>
         </div>
