@@ -2,11 +2,20 @@
 
 
 import Link from 'next/link';
-import { Trophy, TrendingUp, Shield, Users, ArrowRight, Star, CheckCircle, Sun, Moon, Zap, Target } from 'lucide-react';
+import { Trophy, TrendingUp, Shield, Users, ArrowRight, Star, CheckCircle, Sun, Moon, Zap, Target, Activity } from 'lucide-react';
 import { useTheme } from '@/contexts/ThemeProvider';
 
 export default function LandingPage() {
   const { theme, toggleTheme, mounted } = useTheme();
+
+  const leagues = [
+    { name: 'Live', count: 21, flag: '📊', color: 'bg-lime-100 dark:bg-lime-900/30 text-lime-700 dark:text-lime-400', icon: true },
+    { name: 'Premier League', count: 20, flag: '🏴󠁧󠁢󠁥󠁮󠁧󠁿', color: 'bg-gray-100 dark:bg-gray-700' },
+    { name: 'Serie A', count: 20, flag: '🇮🇹', color: 'bg-gray-100 dark:bg-gray-700' },
+    { name: 'Bundesliga', count: 18, flag: '🇩🇪', color: 'bg-gray-100 dark:bg-gray-700' },
+    { name: 'LaLiga', count: 20, flag: '🇪🇸', color: 'bg-gray-100 dark:bg-gray-700' },
+    { name: 'Ligue 1', count: 18, flag: '🇫🇷', color: 'bg-gray-100 dark:bg-gray-700' },
+  ];
 
   return (
     <div className="min-h-screen bg-white dark:bg-gray-900">
@@ -105,6 +114,33 @@ export default function LandingPage() {
                 <span>Cancel Anytime</span>
               </div>
             </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="py-8 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800">
+        <div className="container mx-auto px-4">
+          <div className="flex items-center gap-4 overflow-x-auto pb-2 scrollbar-hide">
+            {leagues.map((league, index) => (
+              <button
+                key={index}
+                className={`flex items-center gap-3 px-5 py-3 rounded-xl border border-gray-200 dark:border-gray-700 hover:border-beteasy-lime dark:hover:border-beteasy-lime transition-all flex-shrink-0 ${league.color || 'bg-white dark:bg-gray-800'}`}
+              >
+                <div className="flex items-center gap-2">
+                  {league.icon ? (
+                    <Activity className="w-5 h-5" />
+                  ) : (
+                    <span className="text-2xl">{league.flag}</span>
+                  )}
+                  <span className="font-medium text-gray-900 dark:text-white whitespace-nowrap">
+                    {league.name}
+                  </span>
+                </div>
+                <span className={`px-2.5 py-1 rounded-lg text-sm font-semibold ${league.icon ? 'bg-lime-200 dark:bg-lime-800 text-lime-900 dark:text-lime-100' : 'bg-lime-100 dark:bg-lime-900/30 text-lime-700 dark:text-lime-400'}`}>
+                  {league.count}
+                </span>
+              </button>
+            ))}
           </div>
         </div>
       </section>
