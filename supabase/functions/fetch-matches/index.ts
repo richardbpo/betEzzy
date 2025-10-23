@@ -139,26 +139,39 @@ Deno.serve(async (req: Request) => {
     for (const match of mockMatches) {
       const matchDate = new Date(match.matchDate);
       if (matchDate >= startDate && matchDate < endDate) {
-        const { error } = await supabase
+        const { data: existing } = await supabase
           .from('matches')
-          .upsert(
-            {
-              external_id: match.id,
-              home_team: match.homeTeam,
-              away_team: match.awayTeam,
-              league: match.league,
-              match_date: match.matchDate,
-              home_odds: match.homeOdds,
-              draw_odds: match.drawOdds,
-              away_odds: match.awayOdds,
-              status: 'upcoming',
-              updated_at: new Date().toISOString(),
-            },
-            { onConflict: 'external_id' }
-          );
+          .select('id')
+          .eq('external_id', match.id)
+          .maybeSingle();
 
-        if (error) {
-          console.error('Error upserting match:', error);
+        const matchData = {
+          external_id: match.id,
+          home_team: match.homeTeam,
+          away_team: match.awayTeam,
+          league: match.league,
+          match_date: match.matchDate,
+          home_odds: match.homeOdds,
+          draw_odds: match.drawOdds,
+          away_odds: match.awayOdds,
+          status: 'upcoming',
+          updated_at: new Date().toISOString(),
+        };
+
+        let result;
+        if (existing) {
+          result = await supabase
+            .from('matches')
+            .update(matchData)
+            .eq('id', existing.id);
+        } else {
+          result = await supabase
+            .from('matches')
+            .insert(matchData);
+        }
+
+        if (result.error) {
+          console.error('Error saving match:', result.error);
         }
       }
     }
@@ -172,6 +185,7 @@ Deno.serve(async (req: Request) => {
       .order('match_date', { ascending: true });
 
     if (fetchError) {
+      console.error('Fetch error:', fetchError);
       throw fetchError;
     }
 

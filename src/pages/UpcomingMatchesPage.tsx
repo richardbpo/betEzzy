@@ -35,10 +35,13 @@ export default function UpcomingMatchesPage() {
       const response = await fetch(apiUrl, { headers });
 
       if (!response.ok) {
-        throw new Error('Failed to fetch matches');
+        const errorData = await response.json().catch(() => ({ error: 'Failed to fetch matches' }));
+        console.error('API Error:', errorData);
+        throw new Error(errorData.error || `HTTP ${response.status}: Failed to fetch matches`);
       }
 
       const data = await response.json();
+      console.log('Fetched matches:', data);
       setMatches(data.matches || []);
     } catch (err: any) {
       console.error('Error fetching matches:', err);
