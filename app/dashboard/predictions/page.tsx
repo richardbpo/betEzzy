@@ -1,10 +1,12 @@
+'use client';
+
 import { useEffect, useState } from 'react';
 import { Trophy, AlertCircle, CheckCircle, TrendingUp, Search, RefreshCw, Sparkles } from 'lucide-react';
-import { useAuth } from '../contexts/AuthContext';
-import { supabase } from '../lib/supabase';
-import { Match, Token, MatchResult } from '../types';
-import DashboardLayout from '../components/DashboardLayout';
-import { calculateLuckySector } from '../utils/predictionAlgorithm';
+import { useAuth } from '@/contexts/AuthProvider';
+import { supabase } from '@/lib/supabase-client';
+import { Match, Token, MatchResult } from '@/types';
+import DashboardLayout from '@/components/DashboardLayout';
+import { calculateLuckySector } from '@/utils/predictionAlgorithm';
 
 export default function PredictionsPage() {
   const { profile } = useAuth();
@@ -83,10 +85,10 @@ export default function PredictionsPage() {
     setMessage(null);
 
     try {
-      const response = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/fetch-matches`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_SUPABASE_URL}/functions/v1/fetch-matches`, {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
+          'Authorization': `Bearer ${process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY}`,
           'Content-Type': 'application/json',
         },
       });

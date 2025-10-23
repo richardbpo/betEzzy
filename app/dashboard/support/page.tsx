@@ -1,9 +1,11 @@
+'use client';
+
 import { useState } from 'react';
 import { LifeBuoy, Send, AlertCircle, CheckCircle } from 'lucide-react';
-import { useAuth } from '../contexts/AuthContext';
-import { supabase } from '../lib/supabase';
-import { TicketSeverity } from '../types';
-import DashboardLayout from '../components/DashboardLayout';
+import { useAuth } from '@/contexts/AuthProvider';
+import { supabase } from '@/lib/supabase-client';
+import { TicketSeverity } from '@/types';
+import DashboardLayout from '@/components/DashboardLayout';
 
 export default function SupportPage() {
   const { profile } = useAuth();

@@ -1,9 +1,11 @@
+'use client';
+
 import { useState } from 'react';
 import { Coins, Check } from 'lucide-react';
-import DashboardLayout from '../components/DashboardLayout';
-import { supabase } from '../lib/supabase';
-import { useAuth } from '../contexts/AuthContext';
-import { SubscriptionPeriod, TokenType } from '../types';
+import DashboardLayout from '@/components/DashboardLayout';
+import { supabase } from '@/lib/supabase-client';
+import { useAuth } from '@/contexts/AuthProvider';
+import { SubscriptionPeriod } from '@/types';
 
 export default function TokensPage() {
   const { profile } = useAuth();

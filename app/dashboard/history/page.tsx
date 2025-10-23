@@ -1,9 +1,11 @@
+'use client';
+
 import { useEffect, useState } from 'react';
 import { Trophy, TrendingUp, X, Check } from 'lucide-react';
-import { useAuth } from '../contexts/AuthContext';
-import { supabase } from '../lib/supabase';
-import { Prediction } from '../types';
-import DashboardLayout from '../components/DashboardLayout';
+import { useAuth } from '@/contexts/AuthProvider';
+import { supabase } from '@/lib/supabase-client';
+import { Prediction } from '@/types';
+import DashboardLayout from '@/components/DashboardLayout';
 
 export default function HistoryPage() {
   const { profile } = useAuth();

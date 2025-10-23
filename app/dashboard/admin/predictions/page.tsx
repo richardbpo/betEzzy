@@ -1,8 +1,10 @@
+'use client';
+
 import { useEffect, useState } from 'react';
 import { CheckCircle, XCircle, Clock, AlertCircle } from 'lucide-react';
-import { useAuth } from '../contexts/AuthContext';
-import { supabase } from '../lib/supabase';
-import DashboardLayout from '../components/DashboardLayout';
+import { useAuth } from '@/contexts/AuthProvider';
+import { supabase } from '@/lib/supabase-client';
+import DashboardLayout from '@/components/DashboardLayout';
 
 interface PredictionWithUser {
   id: string;

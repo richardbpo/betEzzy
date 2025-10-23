@@ -1,3 +1,5 @@
+'use client';
+
 import { useState } from 'react';
 import { Search, Trophy, Calendar, TrendingUp } from 'lucide-react';
 

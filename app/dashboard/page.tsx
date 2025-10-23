@@ -1,10 +1,12 @@
+'use client';
+
 import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import Link from 'next/link';
 import { Trophy, TrendingUp, Coins, Target, ArrowRight } from 'lucide-react';
-import { useAuth } from '../contexts/AuthContext';
-import { supabase } from '../lib/supabase';
-import { Match, Token } from '../types';
-import DashboardLayout from '../components/DashboardLayout';
+import { useAuth } from '@/contexts/AuthProvider';
+import { supabase } from '@/lib/supabase-client';
+import { Match, Token } from '@/types';
+import DashboardLayout from '@/components/DashboardLayout';
 
 export default function DashboardHome() {
   const { profile } = useAuth();
@@ -111,7 +113,7 @@ export default function DashboardHome() {
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-xl font-bold text-gray-900 dark:text-white">Upcoming Matches</h2>
               <Link
-                to="/dashboard/predictions"
+                href="/dashboard/predictions"
                 className="text-green-600 dark:text-green-400 hover:text-green-700 dark:hover:text-green-300 text-sm font-semibold flex items-center"
               >
                 View all
@@ -130,7 +132,7 @@ export default function DashboardHome() {
                 {upcomingMatches.map((match) => (
                   <Link
                     key={match.id}
-                    to="/dashboard/predictions"
+                    href="/dashboard/predictions"
                     className="block bg-gray-50 dark:bg-gray-700/50 rounded-xl p-4 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
                   >
                     <div className="flex items-center justify-between mb-2">
@@ -174,7 +176,7 @@ export default function DashboardHome() {
               <p className="text-sm text-white/75">Perfect for casual predictors</p>
             </div>
             <Link
-              to="/dashboard/tokens"
+              href="/dashboard/tokens"
               className="block w-full bg-white text-green-600 font-bold py-3 rounded-xl text-center hover:bg-gray-100 transition-colors"
             >
               Purchase Tokens
@@ -186,7 +188,7 @@ export default function DashboardHome() {
           <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">Quick Actions</h2>
           <div className="grid md:grid-cols-3 gap-4">
             <Link
-              to="/dashboard/predictions"
+              href="/dashboard/predictions"
               className="bg-gradient-to-br from-green-500 to-green-600 text-white rounded-xl p-4 hover:from-green-600 hover:to-green-700 transition-all"
             >
               <TrendingUp className="w-8 h-8 mb-2" />
@@ -194,7 +196,7 @@ export default function DashboardHome() {
               <p className="text-sm text-white/80">Predict upcoming matches</p>
             </Link>
             <Link
-              to="/dashboard/history"
+              href="/dashboard/history"
               className="bg-gradient-to-br from-blue-500 to-blue-600 text-white rounded-xl p-4 hover:from-blue-600 hover:to-blue-700 transition-all"
             >
               <Trophy className="w-8 h-8 mb-2" />
@@ -202,7 +204,7 @@ export default function DashboardHome() {
               <p className="text-sm text-white/80">See your past predictions</p>
             </Link>
             <Link
-              to="/dashboard/support"
+              href="/dashboard/support"
               className="bg-gradient-to-br from-purple-500 to-purple-600 text-white rounded-xl p-4 hover:from-purple-600 hover:to-purple-700 transition-all"
             >
               <Target className="w-8 h-8 mb-2" />

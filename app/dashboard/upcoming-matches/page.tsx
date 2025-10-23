@@ -1,6 +1,7 @@
+'use client';
+
 import { useState, useEffect } from 'react';
 import { Calendar, TrendingUp, AlertCircle, RefreshCw } from 'lucide-react';
-import { supabase } from '../lib/supabase';
 
 interface Match {
   id: string;
@@ -26,9 +27,9 @@ export default function UpcomingMatchesPage() {
       setLoading(true);
       setError('');
 
-      const apiUrl = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/fetch-matches${filter !== 'all' ? `?date=${filter}` : ''}`;
+      const apiUrl = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/functions/v1/fetch-matches${filter !== 'all' ? `?date=${filter}` : ''}`;
       const headers = {
-        'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
+        'Authorization': `Bearer ${process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY}`,
         'Content-Type': 'application/json',
       };
 
