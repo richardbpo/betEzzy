@@ -12,6 +12,7 @@ import SupportPage from './pages/SupportPage';
 import EventsPage from './pages/EventsPage';
 import TeamSearchPage from './pages/TeamSearchPage';
 import UpcomingMatchesPage from './pages/UpcomingMatchesPage';
+import AdminPredictionsPage from './pages/AdminPredictionsPage';
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { user, loading } = useAuth();
@@ -130,6 +131,14 @@ function AppRoutes() {
         element={
           <ProtectedRoute>
             <UpcomingMatchesPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/dashboard/admin/predictions"
+        element={
+          <ProtectedRoute>
+            <AdminPredictionsPage />
           </ProtectedRoute>
         }
       />

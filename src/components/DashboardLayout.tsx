@@ -27,6 +27,8 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
     }
   };
 
+  const isAdmin = profile?.role === 'system_admin' || profile?.role === 'manager';
+
   const navItems = [
     { icon: Home, label: 'Dashboard', path: '/dashboard' },
     { icon: Calendar, label: 'Upcoming Matches', path: '/dashboard/upcoming-matches' },
@@ -35,13 +37,8 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
     { icon: Coins, label: 'Tokens', path: '/dashboard/tokens' },
     { icon: BarChart3, label: 'History', path: '/dashboard/history' },
     { icon: LifeBuoy, label: 'Support', path: '/dashboard/support' },
+    ...(isAdmin ? [{ icon: Settings, label: 'Manage Predictions', path: '/dashboard/admin/predictions' }] : []),
   ];
-
-  const isAdmin = profile?.role === 'system_admin' || profile?.role === 'manager';
-
-  if (isAdmin) {
-    navItems.push({ icon: Settings, label: 'Admin', path: '/dashboard/admin' });
-  }
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">

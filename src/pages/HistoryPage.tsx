@@ -34,10 +34,37 @@ export default function HistoryPage() {
     }
   };
 
-  const getResultLabel = (result: string, match: any) => {
-    if (result === 'home_win') return match.home_team;
-    if (result === 'away_win') return match.away_team;
+  const getResultLabel = (result: string, prediction: any) => {
+    const homeTeam = prediction.home_team || prediction.match?.home_team;
+    const awayTeam = prediction.away_team || prediction.match?.away_team;
+
+    if (result === 'home_win') return homeTeam;
+    if (result === 'away_win') return awayTeam;
     return 'Draw';
+  };
+
+  const getResultStatusBadge = (status: string) => {
+    if (status === 'won') {
+      return (
+        <div className="flex items-center px-3 py-1 rounded-full bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400">
+          <Check className="w-4 h-4 mr-1" />
+          <span className="text-sm font-semibold">Won</span>
+        </div>
+      );
+    } else if (status === 'lost') {
+      return (
+        <div className="flex items-center px-3 py-1 rounded-full bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400">
+          <X className="w-4 h-4 mr-1" />
+          <span className="text-sm font-semibold">Lost</span>
+        </div>
+      );
+    } else {
+      return (
+        <div className="flex items-center px-3 py-1 rounded-full bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-400">
+          <span className="text-sm font-semibold">Pending</span>
+        </div>
+      );
+    }
   };
 
   return (
@@ -79,53 +106,49 @@ export default function HistoryPage() {
             </div>
           ) : predictions.length > 0 ? (
             <div className="divide-y divide-gray-200 dark:divide-gray-700">
-              {predictions.map((prediction) => (
-                <div key={prediction.id} className="p-6">
-                  <div className="flex items-start justify-between mb-3">
-                    <div>
-                      <p className="font-semibold text-gray-900 dark:text-white mb-1">
-                        {prediction.match?.home_team} vs {prediction.match?.away_team}
-                      </p>
-                      <p className="text-sm text-gray-600 dark:text-gray-400">
-                        {prediction.match?.league}
-                      </p>
-                    </div>
-                    {prediction.is_correct !== null && (
-                      <div className={`flex items-center px-3 py-1 rounded-full ${
-                        prediction.is_correct
-                          ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400'
-                          : 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400'
-                      }`}>
-                        {prediction.is_correct ? (
-                          <Check className="w-4 h-4 mr-1" />
-                        ) : (
-                          <X className="w-4 h-4 mr-1" />
+              {predictions.map((prediction) => {
+                const homeTeam = prediction.home_team || prediction.match?.home_team;
+                const awayTeam = prediction.away_team || prediction.match?.away_team;
+                const league = prediction.league || prediction.match?.league;
+
+                return (
+                  <div key={prediction.id} className="p-6">
+                    <div className="flex items-start justify-between mb-3">
+                      <div className="flex-1">
+                        <p className="font-semibold text-gray-900 dark:text-white mb-1">
+                          {homeTeam} vs {awayTeam}
+                        </p>
+                        <p className="text-sm text-gray-600 dark:text-gray-400">
+                          {league}
+                        </p>
+                        {!prediction.match_id && (
+                          <span className="inline-block mt-1 text-xs bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 px-2 py-0.5 rounded">
+                            Manual Entry
+                          </span>
                         )}
-                        <span className="text-sm font-semibold">
-                          {prediction.is_correct ? 'Correct' : 'Incorrect'}
-                        </span>
                       </div>
-                    )}
-                  </div>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">Your Prediction</p>
-                      <p className="font-semibold text-gray-900 dark:text-white">
-                        {getResultLabel(prediction.predicted_result, prediction.match)}
-                      </p>
+                      {getResultStatusBadge(prediction.result_status || 'pending')}
                     </div>
-                    <div>
-                      <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">Confidence</p>
-                      <p className="font-semibold text-gray-900 dark:text-white">
-                        {prediction.confidence}%
-                      </p>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">Your Prediction</p>
+                        <p className="font-semibold text-gray-900 dark:text-white">
+                          {getResultLabel(prediction.predicted_result, prediction)}
+                        </p>
+                      </div>
+                      <div>
+                        <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">Confidence</p>
+                        <p className="font-semibold text-gray-900 dark:text-white">
+                          {prediction.confidence}%
+                        </p>
+                      </div>
                     </div>
+                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-3">
+                      {new Date(prediction.created_at).toLocaleString()}
+                    </p>
                   </div>
-                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-3">
-                    {new Date(prediction.created_at).toLocaleString()}
-                  </p>
-                </div>
-              ))}
+                );
+              })}
             </div>
           ) : (
             <div className="p-12 text-center text-gray-500 dark:text-gray-400">

@@ -175,6 +175,25 @@ export default function PredictionsPage() {
       const isManualMatch = selectedMatch.id.toString().startsWith('manual-');
 
       if (isManualMatch) {
+        const { error: predictionError } = await supabase.from('predictions').insert([
+          {
+            user_id: profile?.id,
+            match_id: null,
+            home_team: selectedMatch.home_team,
+            away_team: selectedMatch.away_team,
+            league: selectedMatch.league,
+            home_odds: selectedMatch.home_odds,
+            draw_odds: selectedMatch.draw_odds,
+            away_odds: selectedMatch.away_odds,
+            predicted_result: prediction,
+            confidence: calculatePrediction(selectedMatch).confidence,
+            token_used: activeTokens.id,
+            result_status: 'pending'
+          },
+        ]);
+
+        if (predictionError) throw predictionError;
+
         const { error: tokenError } = await supabase
           .from('tokens')
           .update({ remaining: activeTokens.remaining - 1 })
@@ -182,15 +201,28 @@ export default function PredictionsPage() {
 
         if (tokenError) throw tokenError;
 
-        setMessage({ type: 'success', text: 'Prediction recorded! (Manual match - not saved to history)' });
+        setMessage({ type: 'success', text: 'Prediction submitted successfully!' });
       } else {
+        const matchData = await supabase
+          .from('matches')
+          .select('home_team, away_team, league, home_odds, draw_odds, away_odds')
+          .eq('id', selectedMatch.id)
+          .maybeSingle();
+
         const { error: predictionError } = await supabase.from('predictions').insert([
           {
             user_id: profile?.id,
             match_id: selectedMatch.id,
+            home_team: matchData.data?.home_team || selectedMatch.home_team,
+            away_team: matchData.data?.away_team || selectedMatch.away_team,
+            league: matchData.data?.league || selectedMatch.league,
+            home_odds: matchData.data?.home_odds || selectedMatch.home_odds,
+            draw_odds: matchData.data?.draw_odds || selectedMatch.draw_odds,
+            away_odds: matchData.data?.away_odds || selectedMatch.away_odds,
             predicted_result: prediction,
             confidence: calculatePrediction(selectedMatch).confidence,
             token_used: activeTokens.id,
+            result_status: 'pending'
           },
         ]);
 
@@ -351,7 +383,7 @@ export default function PredictionsPage() {
               <div className="grid md:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                    Home Team
+                    Home Team <span className="text-red-500">*</span>
                   </label>
                   <input
                     type="text"
@@ -363,7 +395,7 @@ export default function PredictionsPage() {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                    Away Team
+                    Away Team <span className="text-red-500">*</span>
                   </label>
                   <input
                     type="text"
@@ -391,7 +423,7 @@ export default function PredictionsPage() {
               <div className="grid grid-cols-3 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                    Home Odds
+                    Home Odds <span className="text-red-500">*</span>
                   </label>
                   <input
                     type="number"
@@ -404,7 +436,7 @@ export default function PredictionsPage() {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                    Draw Odds
+                    Draw Odds <span className="text-red-500">*</span>
                   </label>
                   <input
                     type="number"
@@ -417,7 +449,7 @@ export default function PredictionsPage() {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                    Away Odds
+                    Away Odds <span className="text-red-500">*</span>
                   </label>
                   <input
                     type="number"
@@ -451,6 +483,7 @@ export default function PredictionsPage() {
                     external_id: null
                   };
                   handleSelectMatch(customMatch);
+                  setShowManualEntry(false);
                   setMessage({ type: 'success', text: 'Manual match loaded! You can now make your prediction.' });
                 }}
                 className="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-3 rounded-xl transition-all"
