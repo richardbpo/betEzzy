@@ -6,5 +6,6 @@
   "/dashboard/history/page": "app/dashboard/history/page.js",
   "/dashboard/tokens/page": "app/dashboard/tokens/page.js",
   "/dashboard/support/page": "app/dashboard/support/page.js",
-  "/dashboard/team-search/page": "app/dashboard/team-search/page.js"
+  "/dashboard/team-search/page": "app/dashboard/team-search/page.js",
+  "/dashboard/upcoming-matches/page": "app/dashboard/upcoming-matches/page.js"
 }
