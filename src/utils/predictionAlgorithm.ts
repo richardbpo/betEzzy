@@ -1,30 +1,4 @@
-export type Angle = number;
-export type Direction = "clockwise" | "counterclockwise" | "collinear";
-
-interface ShiftResult {
-  newA: Angle;
-  newB: Angle;
-  newC: Angle;
-}
-
-interface MidpointResult {
-  midpointClockwise: Angle;
-  midpointCounterclockwise: Angle;
-}
-
-interface FinalMidpointResult {
-  finalMidpointClockwise: Angle;
-  finalMidpointCounterclockwise: Angle;
-}
-
-interface SectorResult {
-  sector: Direction;
-  start: Angle;
-  end: Angle;
-  angle: Angle;
-}
-
-const inputToAngleMapping: Record<number, Angle> = {
+const inputToAngleMapping: Record<number, number> = {
   0: 0, 4: 0, 14: 0, 360: 0, 40: 0, 50: 0,
   1: 45, 2: 45, 7: 45, 8: 45, 10: 45, 11: 45, 13: 45, 16: 45, 37: 45, 38: 45, 43: 45, 44: 45, 46: 45, 47: 45, 49: 45,
   19: 135, 22: 135, 25: 135, 26: 135, 29: 135, 31: 135, 34: 135, 35: 135,
@@ -42,30 +16,34 @@ const angleToLuckyValueMapping: Record<number, number> = {
   360: 32
 };
 
-function convertUserInputToAngle(input: number): Angle {
+function convertUserInputToAngle(input: number): number {
   return inputToAngleMapping[input] ?? input;
 }
 
-function calculateOrientation(A: Angle, B: Angle, C: Angle): Direction {
-  const xA = Math.cos((A * Math.PI) / 180);
-  const xB = Math.cos((B * Math.PI) / 180);
-  const xC = Math.cos((C * Math.PI) / 180);
-  const yA = Math.sin((A * Math.PI) / 180);
-  const yB = Math.sin((B * Math.PI) / 180);
-  const yC = Math.sin((C * Math.PI) / 180);
+function calculateOrientation(A: number, B: number, C: number): string {
+  const xA = Math.cos(A * Math.PI / 180);
+  const xB = Math.cos(B * Math.PI / 180);
+  const xC = Math.cos(C * Math.PI / 180);
+  const yA = Math.sin(A * Math.PI / 180);
+  const yB = Math.sin(B * Math.PI / 180);
+  const yC = Math.sin(C * Math.PI / 180);
 
   const orientationValue = (xB - xA) * (yC - yA) - (xC - xA) * (yB - yA);
 
-  if (orientationValue > 0) return "counterclockwise";
-  if (orientationValue < 0) return "clockwise";
-  return "collinear";
+  if (orientationValue > 0) {
+    return "counterclockwise";
+  } else if (orientationValue < 0) {
+    return "clockwise";
+  } else {
+    return "collinear";
+  }
 }
 
-function normalizeAngle(angle: Angle): Angle {
+function normalizeAngle(angle: number): number {
   return (angle + 360) % 360;
 }
 
-function calculateShift(A: Angle, B: Angle, C: Angle): ShiftResult {
+function calculateShift(A: number, B: number, C: number): { newA: number; newB: number; newC: number } {
   const orientation = calculateOrientation(A, B, C);
   const shift = normalizeAngle(A - C);
 
@@ -74,109 +52,110 @@ function calculateShift(A: Angle, B: Angle, C: Angle): ShiftResult {
     const newB = normalizeAngle(B + shift);
     const newC = normalizeAngle(C + shift);
     return { newA, newB, newC };
+  } else {
+    return { newA: A, newB: B, newC: C };
   }
-
-  return { newA: A, newB: B, newC: C };
 }
 
-function calculateMidpointAngle(A: Angle, B: Angle): MidpointResult {
+function calculateMidpointAngle(A: number, B: number): { midpointClockwise: number; midpointCounterclockwise: number } {
   A = normalizeAngle(A);
   B = normalizeAngle(B);
 
-  let clockwiseDiff = A - B;
-  let counterclockwiseDiff = B - A;
+  let clockwiseDifference = A - B;
+  let counterclockwiseDifference = B - A;
 
-  if (clockwiseDiff < 0) clockwiseDiff += 360;
-  if (counterclockwiseDiff < 0) counterclockwiseDiff += 360;
+  if (clockwiseDifference < 0) clockwiseDifference += 360;
+  if (counterclockwiseDifference < 0) counterclockwiseDifference += 360;
 
-  const midpointClockwise = (B + clockwiseDiff / 2) % 360;
-  const midpointCounterclockwise = (A + counterclockwiseDiff / 2) % 360;
+  let midpointClockwise = B + clockwiseDifference / 2;
+  let midpointCounterclockwise = A + counterclockwiseDifference / 2;
 
-  return { midpointClockwise, midpointCounterclockwise };
+  return {
+    midpointClockwise: midpointClockwise % 360,
+    midpointCounterclockwise: midpointCounterclockwise % 360
+  };
 }
 
-function calculateFinalMidpoint(midpoint: Angle, C: Angle): FinalMidpointResult {
-  const angle1 = normalizeAngle(midpoint);
-  const angle2 = normalizeAngle(C);
+function calculateFinalMidpoint(midpoint: number, C: number): { finalMidpointClockwise: number; finalMidpointCounterclockwise: number } {
+  let angle1 = normalizeAngle(midpoint);
+  let angle2 = normalizeAngle(C);
 
-  let clockwiseDiff = angle1 - angle2;
-  let counterclockwiseDiff = angle2 - angle1;
+  let clockwiseDifference = angle1 - angle2;
+  let counterclockwiseDifference = angle2 - angle1;
 
-  if (clockwiseDiff < 0) clockwiseDiff += 360;
-  if (counterclockwiseDiff < 0) counterclockwiseDiff += 360;
+  if (clockwiseDifference < 0) clockwiseDifference += 360;
+  if (counterclockwiseDifference < 0) counterclockwiseDifference += 360;
 
-  const finalMidpointClockwise = (angle2 + clockwiseDiff / 2) % 360;
-  const finalMidpointCounterclockwise = (angle1 + counterclockwiseDiff / 2) % 360;
+  let midpointClockwise = angle2 + clockwiseDifference / 2;
+  let midpointCounterclockwise = angle1 + counterclockwiseDifference / 2;
 
-  return { finalMidpointClockwise, finalMidpointCounterclockwise };
+  return {
+    finalMidpointClockwise: midpointClockwise % 360,
+    finalMidpointCounterclockwise: midpointCounterclockwise % 360
+  };
 }
 
-function calculateSmallestSector(start: Angle, end: Angle): SectorResult {
+function calculateSmallestSector(start: number, end: number): { sector: string; start: number; end: number; angle: number } {
   start = normalizeAngle(start);
   end = normalizeAngle(end);
 
-  let clockwiseDist = end - start;
-  if (clockwiseDist < 0) clockwiseDist += 360;
+  let clockwiseDistance = end - start;
+  if (clockwiseDistance < 0) clockwiseDistance += 360;
 
-  let counterclockwiseDist = start - end;
-  if (counterclockwiseDist < 0) counterclockwiseDist += 360;
+  let counterclockwiseDistance = start - end;
+  if (counterclockwiseDistance < 0) counterclockwiseDistance += 360;
 
-  if (clockwiseDist <= counterclockwiseDist) {
-    return { sector: "clockwise", start, end, angle: clockwiseDist };
+  if (clockwiseDistance <= counterclockwiseDistance) {
+    return {
+      sector: "clockwise",
+      start: start,
+      end: end,
+      angle: clockwiseDistance
+    };
+  } else {
+    return {
+      sector: "counterclockwise",
+      start: end,
+      end: start,
+      angle: counterclockwiseDistance
+    };
   }
-  return { sector: "counterclockwise", start: end, end: start, angle: counterclockwiseDist };
 }
 
-function roundUpToNextTens(angle: Angle): Angle {
+function roundUpToNextTens(angle: number): number {
   return Math.ceil(angle / 10) * 10;
 }
 
-function generateLuckyAngles(angle: Angle, direction: Direction): Angle[] {
-  const angles: Angle[] = [];
-  const step = direction === "clockwise" ? 10 : -10;
-  for (let i = -5; i <= 6; i++) {
-    angles.push(normalizeAngle(angle + i * step));
-  }
-  return angles;
-}
+function calculateSectorForOdds(firstOdd: number, secondOdd: number, thirdOdd: number): string {
+  const a = Math.round(firstOdd * 10);
+  const b = Math.round(secondOdd * 10);
+  const c = Math.round(thirdOdd * 10);
 
-function mapAnglesToLuckyValues(angles: Angle[]): (number | null)[] {
-  return angles.map(angle => angleToLuckyValueMapping[angle] ?? null);
-}
-
-// ✅ Exported React-friendly function
-export function calculateLuckySector(Ainput: number, Binput: number, Cinput: number) {
-  let A = convertUserInputToAngle(Ainput);
-  let B = convertUserInputToAngle(Binput);
-  let C = convertUserInputToAngle(Cinput);
+  const A = convertUserInputToAngle(a);
+  const B = convertUserInputToAngle(b);
+  const C = convertUserInputToAngle(c);
 
   const orientation = calculateOrientation(A, B, C);
+  let newA = A, newB = B, newC = C;
 
   if (orientation === "counterclockwise") {
-    ({ newA: A, newB: B, newC: C } = calculateShift(A, B, C));
+    const shiftedAngles = calculateShift(A, B, C);
+    newA = shiftedAngles.newA;
+    newB = shiftedAngles.newB;
+    newC = shiftedAngles.newC;
   }
 
-  const midpoints = calculateMidpointAngle(A, B);
-  const chosenMidpoint = orientation === "counterclockwise"
-    ? midpoints.midpointCounterclockwise
-    : midpoints.midpointClockwise;
+  const midpoints = calculateMidpointAngle(newA, newB);
+  const chosenMidpoint = orientation === "counterclockwise" ? midpoints.midpointCounterclockwise : midpoints.midpointClockwise;
 
-  const finalMidpoints = calculateFinalMidpoint(chosenMidpoint, C);
+  const smallestSector = calculateSmallestSector(newC, chosenMidpoint);
 
-  const luckyClockwise = roundUpToNextTens(finalMidpoints.finalMidpointClockwise);
-  const luckyCounterclockwise = roundUpToNextTens(finalMidpoints.finalMidpointCounterclockwise);
+  return `${smallestSector.sector} from ${smallestSector.start.toFixed(0)}° to ${smallestSector.end.toFixed(0)}° with angle ${smallestSector.angle.toFixed(0)}°`;
+}
 
-  const luckyClockwiseAngles = generateLuckyAngles(luckyClockwise, "clockwise");
-  const luckyCounterclockwiseAngles = generateLuckyAngles(luckyCounterclockwise, "counterclockwise");
+export function calculateLuckySector(homeOdds: number, drawOdds: number, awayOdds: number): { sector1: string; sector2: string } {
+  const sector1 = calculateSectorForOdds(homeOdds, drawOdds, awayOdds);
+  const sector2 = calculateSectorForOdds(awayOdds, drawOdds, homeOdds);
 
-  const mappedLuckyClockwise = mapAnglesToLuckyValues(luckyClockwiseAngles);
-  const mappedLuckyCounterclockwise = mapAnglesToLuckyValues(luckyCounterclockwiseAngles);
-
-  const smallestSector = calculateSmallestSector(C, chosenMidpoint);
-
-  return {
-    sector: `${smallestSector.sector} from ${smallestSector.start}° to ${smallestSector.end}° with angle ${smallestSector.angle}°`,
-    clockwiseValues: mappedLuckyClockwise,
-    counterclockwiseValues: mappedLuckyCounterclockwise
-  };
+  return { sector1, sector2 };
 }

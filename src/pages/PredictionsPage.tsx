@@ -607,21 +607,13 @@ export default function PredictionsPage() {
                       <div className="bg-white dark:bg-gray-800 rounded-lg p-2">
                         <p className="text-xs text-green-600 dark:text-green-500 mb-1">Sector 1:</p>
                         <p className="text-xs text-green-800 dark:text-green-300">
-                          {calculateLuckySector(
-                            Math.round(selectedMatch.home_odds * 10),
-                            Math.round(selectedMatch.draw_odds * 10),
-                            Math.round(selectedMatch.away_odds * 10)
-                          ).sector}
+                          {calculateLuckySector(selectedMatch.home_odds, selectedMatch.draw_odds, selectedMatch.away_odds).sector1}
                         </p>
                       </div>
                       <div className="bg-white dark:bg-gray-800 rounded-lg p-2">
                         <p className="text-xs text-green-600 dark:text-green-500 mb-1">Sector 2:</p>
                         <p className="text-xs text-green-800 dark:text-green-300">
-                          {calculateLuckySector(
-                            Math.round(selectedMatch.away_odds * 10),
-                            Math.round(selectedMatch.draw_odds * 10),
-                            Math.round(selectedMatch.home_odds * 10)
-                          ).sector}
+                          {calculateLuckySector(selectedMatch.home_odds, selectedMatch.draw_odds, selectedMatch.away_odds).sector2}
                         </p>
                       </div>
                     </div>
