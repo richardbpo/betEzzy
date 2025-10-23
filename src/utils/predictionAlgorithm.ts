@@ -1,5 +1,5 @@
-type Angle = number;
-type Direction = "clockwise" | "counterclockwise" | "collinear";
+export type Angle = number;
+export type Direction = "clockwise" | "counterclockwise" | "collinear";
 
 interface ShiftResult {
   newA: Angle;
@@ -144,14 +144,11 @@ function mapAnglesToLuckyValues(angles: Angle[]): (number | null)[] {
   return angles.map(angle => angleToLuckyValueMapping[angle] ?? null);
 }
 
-function calculateSectorForOdds(firstOdd: number, secondOdd: number, thirdOdd: number): string {
-  const a = Math.round(firstOdd * 10);
-  const b = Math.round(secondOdd * 10);
-  const c = Math.round(thirdOdd * 10);
-
-  let A = convertUserInputToAngle(a);
-  let B = convertUserInputToAngle(b);
-  let C = convertUserInputToAngle(c);
+// ✅ Exported React-friendly function
+export function calculateLuckySector(Ainput: number, Binput: number, Cinput: number) {
+  let A = convertUserInputToAngle(Ainput);
+  let B = convertUserInputToAngle(Binput);
+  let C = convertUserInputToAngle(Cinput);
 
   const orientation = calculateOrientation(A, B, C);
 
@@ -177,12 +174,9 @@ function calculateSectorForOdds(firstOdd: number, secondOdd: number, thirdOdd: n
 
   const smallestSector = calculateSmallestSector(C, chosenMidpoint);
 
-  return `${smallestSector.sector} from ${smallestSector.start}° to ${smallestSector.end}° with angle ${smallestSector.angle}°`;
-}
-
-export function calculateLuckySector(homeOdds: number, drawOdds: number, awayOdds: number): { sector1: string; sector2: string } {
-  const sector1 = calculateSectorForOdds(homeOdds, drawOdds, awayOdds);
-  const sector2 = calculateSectorForOdds(awayOdds, drawOdds, homeOdds);
-
-  return { sector1, sector2 };
+  return {
+    sector: `${smallestSector.sector} from ${smallestSector.start}° to ${smallestSector.end}° with angle ${smallestSector.angle}°`,
+    clockwiseValues: mappedLuckyClockwise,
+    counterclockwiseValues: mappedLuckyCounterclockwise
+  };
 }
