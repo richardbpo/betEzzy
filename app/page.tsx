@@ -1,13 +1,13 @@
 'use client';
+export const dynamic = 'force-dynamic';
+
 
 import Link from 'next/link';
 import { Trophy, TrendingUp, Shield, Users, ArrowRight, Star, CheckCircle, Sun, Moon, Zap, Target } from 'lucide-react';
 import { useTheme } from '@/contexts/ThemeProvider';
 
-export const dynamic = 'force-dynamic';
-
 export default function LandingPage() {
-  const { theme, toggleTheme } = useTheme();
+  const { theme, toggleTheme, mounted } = useTheme();
 
   return (
     <div className="min-h-screen bg-white dark:bg-gray-900">
@@ -24,12 +24,14 @@ export default function LandingPage() {
               </div>
             </div>
             <div className="flex items-center space-x-4">
-              <button
-                onClick={toggleTheme}
-                className="p-2 text-gray-400 hover:text-white transition-colors rounded-lg hover:bg-gray-800"
-              >
-                {theme === 'dark' ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
-              </button>
+              {mounted && (
+                <button
+                  onClick={toggleTheme}
+                  className="p-2 text-gray-400 hover:text-white transition-colors rounded-lg hover:bg-gray-800"
+                >
+                  {theme === 'dark' ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+                </button>
+              )}
               <Link
                 href="/login"
                 className="text-white hover:text-beteasy-lime transition-colors px-4 py-2 font-semibold"

@@ -1,4 +1,6 @@
 'use client';
+export const dynamic = 'force-dynamic';
+
 
 import { useEffect, useState } from 'react';
 import { Trophy, AlertCircle, CheckCircle, TrendingUp, Search, RefreshCw, Sparkles } from 'lucide-react';

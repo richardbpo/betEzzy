@@ -1,4 +1,6 @@
 import { Calendar } from 'lucide-react';
+export const dynamic = 'force-dynamic';
+
 import DashboardLayout from '@/components/DashboardLayout';
 
 export default function EventsPage() {
