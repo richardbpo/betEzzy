@@ -67,24 +67,34 @@ export default function LandingPage() {
           }}></div>
         </div>
 
-        <div className="container mx-auto px-4 py-24 relative">
-          <div className="max-w-5xl mx-auto text-center">
-            <div className="inline-flex items-center space-x-2 bg-beteasy-lime/10 border border-beteasy-lime/30 text-beteasy-lime px-4 py-2 rounded-full mb-8">
+        <div className="absolute right-0 top-0 bottom-0 w-1/2 hidden lg:block">
+          <div className="relative w-full h-full">
+            <img
+              src="https://images.pexels.com/photos/5256816/pexels-photo-5256816.jpeg?auto=compress&cs=tinysrgb&w=1200"
+              alt="Success celebration"
+              className="absolute right-0 top-1/2 -translate-y-1/2 h-full w-auto object-cover opacity-60"
+            />
+          </div>
+        </div>
+
+        <div className="container mx-auto px-4 py-16 relative">
+          <div className="max-w-3xl text-left lg:text-left">
+            <div className="inline-flex items-center space-x-2 bg-beteasy-lime/10 border border-beteasy-lime/30 text-beteasy-lime px-4 py-2 rounded-full mb-6">
               <Zap className="w-4 h-4" />
               <span className="text-sm font-semibold">AI-Powered Predictions</span>
             </div>
 
-            <h1 className="text-5xl md:text-7xl font-extrabold text-white mb-6 leading-tight">
+            <h1 className="text-4xl md:text-6xl font-extrabold text-white mb-5 leading-tight">
               Win Smarter with
               <span className="block text-beteasy-lime">Data-Driven Insights</span>
             </h1>
 
-            <p className="text-xl text-gray-200 dark:text-gray-300 mb-10 max-w-3xl mx-auto">
+            <p className="text-lg text-gray-200 dark:text-gray-300 mb-8 max-w-2xl">
               Transform your betting strategy with advanced analytics, real-time predictions,
               and expert insights. Join thousands of successful bettors.
             </p>
 
-            <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
+            <div className="flex flex-col sm:flex-row gap-4 mb-8">
               <Link
                 href="/register"
                 className="bg-beteasy-lime hover:bg-beteasy-lime-dark text-gray-900 font-bold px-8 py-4 rounded-lg transition-all flex items-center justify-center space-x-2 text-lg uppercase"
@@ -100,17 +110,17 @@ export default function LandingPage() {
               </Link>
             </div>
 
-            <div className="flex items-center justify-center gap-8 text-white/80">
+            <div className="flex items-center gap-6 text-white/80 text-sm">
               <div className="flex items-center space-x-2">
-                <CheckCircle className="w-5 h-5 text-beteasy-lime" />
+                <CheckCircle className="w-4 h-4 text-beteasy-lime" />
                 <span>No Credit Card</span>
               </div>
               <div className="flex items-center space-x-2">
-                <CheckCircle className="w-5 h-5 text-beteasy-lime" />
+                <CheckCircle className="w-4 h-4 text-beteasy-lime" />
                 <span>Free Tokens</span>
               </div>
               <div className="flex items-center space-x-2">
-                <CheckCircle className="w-5 h-5 text-beteasy-lime" />
+                <CheckCircle className="w-4 h-4 text-beteasy-lime" />
                 <span>Cancel Anytime</span>
               </div>
             </div>
@@ -118,25 +128,29 @@ export default function LandingPage() {
         </div>
       </section>
 
-      <section className="py-8 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800">
+      <section className="py-6 bg-gray-50 dark:bg-gray-900">
         <div className="container mx-auto px-4">
-          <div className="flex items-center gap-4 overflow-x-auto pb-2 scrollbar-hide">
+          <div className="flex items-center gap-3 overflow-x-auto pb-2 scrollbar-hide">
             {leagues.map((league, index) => (
               <button
                 key={index}
-                className={`flex items-center gap-3 px-5 py-3 rounded-xl border border-gray-200 dark:border-gray-700 hover:border-beteasy-lime dark:hover:border-beteasy-lime transition-all flex-shrink-0 ${league.color || 'bg-white dark:bg-gray-800'}`}
+                className="flex items-center gap-3 px-4 py-3 rounded-2xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:shadow-md transition-all flex-shrink-0 min-w-fit"
               >
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2.5">
                   {league.icon ? (
-                    <Activity className="w-5 h-5" />
+                    <div className="w-10 h-10 rounded-xl bg-orange-50 dark:bg-orange-900/20 flex items-center justify-center">
+                      <Activity className="w-5 h-5 text-orange-500" />
+                    </div>
                   ) : (
-                    <span className="text-2xl">{league.flag}</span>
+                    <div className="w-10 h-10 rounded-xl bg-gray-100 dark:bg-gray-700 flex items-center justify-center text-2xl">
+                      {league.flag}
+                    </div>
                   )}
-                  <span className="font-medium text-gray-900 dark:text-white whitespace-nowrap">
+                  <span className="font-semibold text-gray-900 dark:text-white whitespace-nowrap text-sm">
                     {league.name}
                   </span>
                 </div>
-                <span className={`px-2.5 py-1 rounded-lg text-sm font-semibold ${league.icon ? 'bg-lime-200 dark:bg-lime-800 text-lime-900 dark:text-lime-100' : 'bg-lime-100 dark:bg-lime-900/30 text-lime-700 dark:text-lime-400'}`}>
+                <span className="px-3 py-1.5 rounded-xl bg-lime-100 dark:bg-lime-900/30 text-lime-700 dark:text-lime-400 text-sm font-bold min-w-[40px] text-center">
                   {league.count}
                 </span>
               </button>
