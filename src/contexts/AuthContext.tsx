@@ -70,24 +70,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const { data, error } = await supabase.auth.signUp({
       email,
       password,
+      options: {
+        data: {
+          username: userData.username,
+          full_name: userData.full_name,
+          phone: userData.phone,
+          country: userData.country || 'Uganda',
+        }
+      }
     });
 
     if (error) throw error;
-
-    if (data.user) {
-      const { error: profileError } = await supabase.from('profiles').insert([
-        {
-          id: data.user.id,
-          username: userData.username!,
-          full_name: userData.full_name!,
-          phone: userData.phone,
-          country: userData.country || 'Uganda',
-          role: 'system_user',
-        },
-      ]);
-
-      if (profileError) throw profileError;
-    }
   };
 
   const signIn = async (email: string, password: string) => {
