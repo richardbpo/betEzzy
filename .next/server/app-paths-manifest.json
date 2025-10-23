@@ -5,5 +5,6 @@
   "/dashboard/page": "app/dashboard/page.js",
   "/dashboard/predictions/page": "app/dashboard/predictions/page.js",
   "/dashboard/team-search/page": "app/dashboard/team-search/page.js",
-  "/dashboard/tokens/page": "app/dashboard/tokens/page.js"
+  "/dashboard/tokens/page": "app/dashboard/tokens/page.js",
+  "/dashboard/support/page": "app/dashboard/support/page.js"
 }
