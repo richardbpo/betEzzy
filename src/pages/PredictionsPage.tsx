@@ -4,6 +4,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { supabase } from '../lib/supabase';
 import { Match, Token, MatchResult } from '../types';
 import DashboardLayout from '../components/DashboardLayout';
+import { calculateLuckySector } from '../utils/predictionAlgorithm';
 
 export default function PredictionsPage() {
   const { profile } = useAuth();
@@ -414,9 +415,15 @@ export default function PredictionsPage() {
                   <p className="text-2xl font-bold text-green-700 dark:text-green-400 mb-1">
                     {getResultLabel(calculatePrediction(selectedMatch).result, selectedMatch)}
                   </p>
-                  <p className="text-sm text-green-600 dark:text-green-500">
+                  <p className="text-sm text-green-600 dark:text-green-500 mb-3">
                     Confidence: {calculatePrediction(selectedMatch).confidence}%
                   </p>
+                  <div className="border-t border-green-200 dark:border-green-800 pt-3 mt-3">
+                    <p className="text-xs text-green-700 dark:text-green-400 font-medium mb-1">Lucky Sector:</p>
+                    <p className="text-sm text-green-800 dark:text-green-300">
+                      {calculateLuckySector(selectedMatch.home_odds, selectedMatch.draw_odds, selectedMatch.away_odds)}
+                    </p>
+                  </div>
                 </div>
 
                 <div>
