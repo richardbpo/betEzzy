@@ -57,8 +57,8 @@ export default function LandingPage() {
         </div>
       </nav>
 
-      <section className="relative bg-gradient-to-br from-red-600 via-red-700 to-red-800 dark:from-red-900 dark:via-red-800 dark:to-gray-900 overflow-hidden">
-        <div className="absolute inset-0 opacity-10">
+      <section className="relative bg-red-600 dark:bg-red-900 overflow-hidden">
+        <div className="absolute inset-0 opacity-5">
           <div className="absolute inset-0" style={{
             backgroundImage: 'radial-gradient(circle at 20% 50%, rgba(164, 208, 55, 0.3) 0%, transparent 50%)',
           }}></div>
@@ -67,17 +67,13 @@ export default function LandingPage() {
           }}></div>
         </div>
 
-        <div className="absolute right-0 top-0 bottom-0 w-1/2 hidden lg:flex items-center justify-end">
-          <div className="relative h-full w-full flex items-center justify-center">
-            <div className="absolute inset-0 bg-gradient-to-l from-red-800/40 via-red-700/60 to-red-600/80"></div>
+        <div className="absolute right-0 top-0 bottom-0 w-1/2 hidden lg:flex items-center justify-end overflow-hidden">
+          <div className="relative h-full w-full">
             <img
               src="https://images.pexels.com/photos/936137/pexels-photo-936137.jpeg?auto=compress&cs=tinysrgb&w=800"
               alt="Success winners"
-              className="h-full w-full object-cover opacity-70 mix-blend-overlay"
+              className="h-full w-full object-cover opacity-25"
             />
-            <div className="absolute bottom-8 right-8 bg-white px-6 py-3 rounded-full shadow-lg">
-              <span className="font-bold text-gray-900 text-lg">CASINO</span>
-            </div>
           </div>
         </div>
 
