@@ -147,7 +147,6 @@ function calculateSectorForOdds(firstOdd: number, secondOdd: number, thirdOdd: n
 
   const midpoints = calculateMidpointAngle(newA, newB);
   const chosenMidpoint = orientation === "counterclockwise" ? midpoints.midpointCounterclockwise : midpoints.midpointClockwise;
-  const finalMidpoints = calculateFinalMidpoint(chosenMidpoint, newC);
 
   const smallestSector = calculateSmallestSector(newC, chosenMidpoint);
 
