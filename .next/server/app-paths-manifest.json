@@ -3,5 +3,6 @@
   "/(auth)/login/page": "app/(auth)/login/page.js",
   "/(auth)/register/page": "app/(auth)/register/page.js",
   "/dashboard/page": "app/dashboard/page.js",
-  "/dashboard/predictions/page": "app/dashboard/predictions/page.js"
+  "/dashboard/predictions/page": "app/dashboard/predictions/page.js",
+  "/dashboard/team-search/page": "app/dashboard/team-search/page.js"
 }
