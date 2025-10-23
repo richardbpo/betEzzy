@@ -126,10 +126,10 @@ function roundUpToNextTens(angle: number): number {
   return Math.ceil(angle / 10) * 10;
 }
 
-export function calculateLuckySector(homeOdds: number, drawOdds: number, awayOdds: number): string {
-  const a = Math.round(homeOdds * 10);
-  const b = Math.round(drawOdds * 10);
-  const c = Math.round(awayOdds * 10);
+function calculateSectorForOdds(firstOdd: number, secondOdd: number, thirdOdd: number): string {
+  const a = Math.round(firstOdd * 10);
+  const b = Math.round(secondOdd * 10);
+  const c = Math.round(thirdOdd * 10);
 
   const A = convertUserInputToAngle(a);
   const B = convertUserInputToAngle(b);
@@ -152,4 +152,11 @@ export function calculateLuckySector(homeOdds: number, drawOdds: number, awayOdd
   const smallestSector = calculateSmallestSector(newC, chosenMidpoint);
 
   return `${smallestSector.sector} from ${smallestSector.start.toFixed(0)}° to ${smallestSector.end.toFixed(0)}° with angle ${smallestSector.angle.toFixed(0)}°`;
+}
+
+export function calculateLuckySector(homeOdds: number, drawOdds: number, awayOdds: number): { sector1: string; sector2: string } {
+  const sector1 = calculateSectorForOdds(homeOdds, drawOdds, awayOdds);
+  const sector2 = calculateSectorForOdds(awayOdds, drawOdds, homeOdds);
+
+  return { sector1, sector2 };
 }

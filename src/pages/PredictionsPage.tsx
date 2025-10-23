@@ -20,6 +20,15 @@ export default function PredictionsPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [searchedMatch, setSearchedMatch] = useState<Match | null>(null);
   const [searchLoading, setSearchLoading] = useState(false);
+  const [showManualEntry, setShowManualEntry] = useState(false);
+  const [manualMatch, setManualMatch] = useState({
+    homeTeam: '',
+    awayTeam: '',
+    league: '',
+    homeOdds: '',
+    drawOdds: '',
+    awayOdds: ''
+  });
 
   useEffect(() => {
     fetchData();
@@ -163,30 +172,45 @@ export default function PredictionsPage() {
     setMessage(null);
 
     try {
-      const { error: predictionError } = await supabase.from('predictions').insert([
-        {
-          user_id: profile?.id,
-          match_id: selectedMatch.id,
-          predicted_result: prediction,
-          confidence: calculatePrediction(selectedMatch).confidence,
-          token_used: activeTokens.id,
-        },
-      ]);
+      const isManualMatch = selectedMatch.id.toString().startsWith('manual-');
 
-      if (predictionError) throw predictionError;
+      if (isManualMatch) {
+        const { error: tokenError } = await supabase
+          .from('tokens')
+          .update({ remaining: activeTokens.remaining - 1 })
+          .eq('id', activeTokens.id);
 
-      const { error: tokenError } = await supabase
-        .from('tokens')
-        .update({ remaining: activeTokens.remaining - 1 })
-        .eq('id', activeTokens.id);
+        if (tokenError) throw tokenError;
 
-      if (tokenError) throw tokenError;
+        setMessage({ type: 'success', text: 'Prediction recorded! (Manual match - not saved to history)' });
+      } else {
+        const { error: predictionError } = await supabase.from('predictions').insert([
+          {
+            user_id: profile?.id,
+            match_id: selectedMatch.id,
+            predicted_result: prediction,
+            confidence: calculatePrediction(selectedMatch).confidence,
+            token_used: activeTokens.id,
+          },
+        ]);
 
-      setMessage({ type: 'success', text: 'Prediction submitted successfully!' });
+        if (predictionError) throw predictionError;
+
+        const { error: tokenError } = await supabase
+          .from('tokens')
+          .update({ remaining: activeTokens.remaining - 1 })
+          .eq('id', activeTokens.id);
+
+        if (tokenError) throw tokenError;
+
+        setMessage({ type: 'success', text: 'Prediction submitted successfully!' });
+      }
+
       setSelectedMatch(null);
       setPrediction('');
       setSearchQuery('');
       setSearchedMatch(null);
+      setManualMatch({ homeTeam: '', awayTeam: '', league: '', homeOdds: '', drawOdds: '', awayOdds: '' });
       await fetchData();
     } catch (error: any) {
       setMessage({ type: 'error', text: error.message || 'Failed to submit prediction' });
@@ -311,6 +335,132 @@ export default function PredictionsPage() {
           )}
         </div>
 
+        <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 border border-gray-200 dark:border-gray-700">
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-lg font-bold text-gray-900 dark:text-white">Manual Match Entry</h2>
+            <button
+              onClick={() => setShowManualEntry(!showManualEntry)}
+              className="text-green-600 dark:text-green-400 hover:text-green-700 dark:hover:text-green-300 font-semibold"
+            >
+              {showManualEntry ? 'Hide' : 'Show'}
+            </button>
+          </div>
+
+          {showManualEntry && (
+            <div className="space-y-4">
+              <div className="grid md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    Home Team
+                  </label>
+                  <input
+                    type="text"
+                    value={manualMatch.homeTeam}
+                    onChange={(e) => setManualMatch({ ...manualMatch, homeTeam: e.target.value })}
+                    placeholder="e.g., Manchester United"
+                    className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-xl text-gray-900 dark:text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-green-500"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    Away Team
+                  </label>
+                  <input
+                    type="text"
+                    value={manualMatch.awayTeam}
+                    onChange={(e) => setManualMatch({ ...manualMatch, awayTeam: e.target.value })}
+                    placeholder="e.g., Chelsea"
+                    className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-xl text-gray-900 dark:text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-green-500"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  League
+                </label>
+                <input
+                  type="text"
+                  value={manualMatch.league}
+                  onChange={(e) => setManualMatch({ ...manualMatch, league: e.target.value })}
+                  placeholder="e.g., Premier League"
+                  className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-xl text-gray-900 dark:text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-green-500"
+                />
+              </div>
+
+              <div className="grid grid-cols-3 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    Home Odds
+                  </label>
+                  <input
+                    type="number"
+                    step="0.1"
+                    value={manualMatch.homeOdds}
+                    onChange={(e) => setManualMatch({ ...manualMatch, homeOdds: e.target.value })}
+                    placeholder="2.5"
+                    className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-xl text-gray-900 dark:text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-green-500"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    Draw Odds
+                  </label>
+                  <input
+                    type="number"
+                    step="0.1"
+                    value={manualMatch.drawOdds}
+                    onChange={(e) => setManualMatch({ ...manualMatch, drawOdds: e.target.value })}
+                    placeholder="3.2"
+                    className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-xl text-gray-900 dark:text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-green-500"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    Away Odds
+                  </label>
+                  <input
+                    type="number"
+                    step="0.1"
+                    value={manualMatch.awayOdds}
+                    onChange={(e) => setManualMatch({ ...manualMatch, awayOdds: e.target.value })}
+                    placeholder="2.8"
+                    className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-xl text-gray-900 dark:text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-green-500"
+                  />
+                </div>
+              </div>
+
+              <button
+                onClick={() => {
+                  if (!manualMatch.homeTeam || !manualMatch.awayTeam || !manualMatch.homeOdds || !manualMatch.drawOdds || !manualMatch.awayOdds) {
+                    setMessage({ type: 'error', text: 'Please fill in all required fields' });
+                    return;
+                  }
+                  const customMatch: Match = {
+                    id: 'manual-' + Date.now(),
+                    home_team: manualMatch.homeTeam,
+                    away_team: manualMatch.awayTeam,
+                    league: manualMatch.league || 'Custom Match',
+                    match_date: new Date().toISOString(),
+                    home_odds: parseFloat(manualMatch.homeOdds),
+                    draw_odds: parseFloat(manualMatch.drawOdds),
+                    away_odds: parseFloat(manualMatch.awayOdds),
+                    status: 'upcoming',
+                    created_at: new Date().toISOString(),
+                    updated_at: new Date().toISOString(),
+                    external_id: null
+                  };
+                  handleSelectMatch(customMatch);
+                  setMessage({ type: 'success', text: 'Manual match loaded! You can now make your prediction.' });
+                }}
+                className="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-3 rounded-xl transition-all"
+              >
+                Load Match & Predict
+              </button>
+            </div>
+          )}
+        </div>
+
         <div className="grid lg:grid-cols-2 gap-6">
           <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 border border-gray-200 dark:border-gray-700">
             <div className="flex items-center justify-between mb-4">
@@ -419,10 +569,21 @@ export default function PredictionsPage() {
                     Confidence: {calculatePrediction(selectedMatch).confidence}%
                   </p>
                   <div className="border-t border-green-200 dark:border-green-800 pt-3 mt-3">
-                    <p className="text-xs text-green-700 dark:text-green-400 font-medium mb-1">Lucky Sector:</p>
-                    <p className="text-sm text-green-800 dark:text-green-300">
-                      {calculateLuckySector(selectedMatch.home_odds, selectedMatch.draw_odds, selectedMatch.away_odds)}
-                    </p>
+                    <p className="text-xs text-green-700 dark:text-green-400 font-medium mb-2">Lucky Sectors:</p>
+                    <div className="space-y-2">
+                      <div className="bg-white dark:bg-gray-800 rounded-lg p-2">
+                        <p className="text-xs text-green-600 dark:text-green-500 mb-1">Sector 1:</p>
+                        <p className="text-xs text-green-800 dark:text-green-300">
+                          {calculateLuckySector(selectedMatch.home_odds, selectedMatch.draw_odds, selectedMatch.away_odds).sector1}
+                        </p>
+                      </div>
+                      <div className="bg-white dark:bg-gray-800 rounded-lg p-2">
+                        <p className="text-xs text-green-600 dark:text-green-500 mb-1">Sector 2:</p>
+                        <p className="text-xs text-green-800 dark:text-green-300">
+                          {calculateLuckySector(selectedMatch.home_odds, selectedMatch.draw_odds, selectedMatch.away_odds).sector2}
+                        </p>
+                      </div>
+                    </div>
                   </div>
                 </div>
 
