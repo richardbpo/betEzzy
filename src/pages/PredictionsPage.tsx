@@ -175,7 +175,22 @@ export default function PredictionsPage() {
       const isManualMatch = selectedMatch.id.toString().startsWith('manual-');
 
       if (isManualMatch) {
-        const { error: predictionError } = await supabase.from('predictions').insert([
+        console.log('Inserting manual match prediction:', {
+          user_id: profile?.id,
+          match_id: null,
+          home_team: selectedMatch.home_team,
+          away_team: selectedMatch.away_team,
+          league: selectedMatch.league,
+          home_odds: selectedMatch.home_odds,
+          draw_odds: selectedMatch.draw_odds,
+          away_odds: selectedMatch.away_odds,
+          predicted_result: prediction,
+          confidence: calculatePrediction(selectedMatch).confidence,
+          token_used: activeTokens.id,
+          result_status: 'pending'
+        });
+
+        const { data: insertedData, error: predictionError } = await supabase.from('predictions').insert([
           {
             user_id: profile?.id,
             match_id: null,
@@ -190,7 +205,9 @@ export default function PredictionsPage() {
             token_used: activeTokens.id,
             result_status: 'pending'
           },
-        ]);
+        ]).select();
+
+        console.log('Insert result:', { insertedData, predictionError });
 
         if (predictionError) throw predictionError;
 
@@ -209,7 +226,22 @@ export default function PredictionsPage() {
           .eq('id', selectedMatch.id)
           .maybeSingle();
 
-        const { error: predictionError } = await supabase.from('predictions').insert([
+        console.log('Inserting regular match prediction:', {
+          user_id: profile?.id,
+          match_id: selectedMatch.id,
+          home_team: matchData.data?.home_team || selectedMatch.home_team,
+          away_team: matchData.data?.away_team || selectedMatch.away_team,
+          league: matchData.data?.league || selectedMatch.league,
+          home_odds: matchData.data?.home_odds || selectedMatch.home_odds,
+          draw_odds: matchData.data?.draw_odds || selectedMatch.draw_odds,
+          away_odds: matchData.data?.away_odds || selectedMatch.away_odds,
+          predicted_result: prediction,
+          confidence: calculatePrediction(selectedMatch).confidence,
+          token_used: activeTokens.id,
+          result_status: 'pending'
+        });
+
+        const { data: insertedData, error: predictionError } = await supabase.from('predictions').insert([
           {
             user_id: profile?.id,
             match_id: selectedMatch.id,
@@ -224,7 +256,9 @@ export default function PredictionsPage() {
             token_used: activeTokens.id,
             result_status: 'pending'
           },
-        ]);
+        ]).select();
+
+        console.log('Insert result:', { insertedData, predictionError });
 
         if (predictionError) throw predictionError;
 
