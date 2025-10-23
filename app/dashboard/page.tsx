@@ -7,7 +7,6 @@ import { Trophy, TrendingUp, Coins, Target, ArrowRight } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthProvider';
 import { supabase } from '@/lib/supabase-client';
 import { Match, Token } from '@/types';
-import DashboardLayout from '@/components/DashboardLayout';
 
 export default function DashboardHome() {
   const { profile } = useAuth();
@@ -78,8 +77,7 @@ export default function DashboardHome() {
   ];
 
   return (
-    <DashboardLayout>
-      <div className="space-y-6">
+    <div className="space-y-6">
         <div>
           <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
             Welcome back, {profile?.full_name?.split(' ')[0]}!
@@ -213,8 +211,7 @@ export default function DashboardHome() {
               <p className="text-sm text-white/80">Contact our team</p>
             </Link>
           </div>
-        </div>
       </div>
-    </DashboardLayout>
+    </div>
   );
 }

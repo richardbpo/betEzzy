@@ -1,9 +1,6 @@
 {
   "/page": "app/page.js",
   "/(auth)/login/page": "app/(auth)/login/page.js",
-  "/dashboard/team-search/page": "app/dashboard/team-search/page.js",
-  "/dashboard/tokens/page": "app/dashboard/tokens/page.js",
-  "/dashboard/upcoming-matches/page": "app/dashboard/upcoming-matches/page.js",
   "/dashboard/predictions/page": "app/dashboard/predictions/page.js",
   "/dashboard/page": "app/dashboard/page.js"
 }

@@ -6,7 +6,6 @@ import { Trophy, TrendingUp, X, Check } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthProvider';
 import { supabase } from '@/lib/supabase-client';
 import { Prediction } from '@/types';
-import DashboardLayout from '@/components/DashboardLayout';
 
 export default function HistoryPage() {
   const { profile } = useAuth();
@@ -71,8 +70,7 @@ export default function HistoryPage() {
   };
 
   return (
-    <DashboardLayout>
-      <div className="max-w-4xl mx-auto space-y-6">
+    <div className="space-y-6">
         <div>
           <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
             Prediction History
@@ -159,7 +157,6 @@ export default function HistoryPage() {
             </div>
           )}
         </div>
-      </div>
-    </DashboardLayout>
+    </div>
   );
 }

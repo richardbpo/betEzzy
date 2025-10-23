@@ -40,26 +40,6 @@
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
       "static/chunks/app/(auth)/register/page.js"
-    ],
-    "/dashboard/team-search/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/dashboard/team-search/page.js"
-    ],
-    "/dashboard/tokens/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/dashboard/tokens/page.js"
-    ],
-    "/dashboard/support/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/dashboard/support/page.js"
-    ],
-    "/dashboard/upcoming-matches/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/dashboard/upcoming-matches/page.js"
     ]
   }
 }

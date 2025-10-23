@@ -6,7 +6,6 @@ import { Trophy, AlertCircle, CheckCircle, TrendingUp, Search, RefreshCw, Sparkl
 import { useAuth } from '@/contexts/AuthProvider';
 import { supabase } from '@/lib/supabase-client';
 import { Match, Token, MatchResult } from '@/types';
-import DashboardLayout from '@/components/DashboardLayout';
 import { calculateLuckySector } from '@/utils/predictionAlgorithm';
 
 export default function PredictionsPage() {
@@ -295,8 +294,7 @@ export default function PredictionsPage() {
   };
 
   return (
-    <DashboardLayout>
-      <div className="max-w-6xl mx-auto space-y-6">
+    <div className="space-y-6">
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
@@ -705,7 +703,6 @@ export default function PredictionsPage() {
             )}
           </div>
         </div>
-      </div>
-    </DashboardLayout>
+    </div>
   );
 }
