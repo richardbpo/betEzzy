@@ -126,6 +126,19 @@ function roundUpToNextTens(angle: number): number {
   return Math.ceil(angle / 10) * 10;
 }
 
+function generateLuckyAngles(angle: number, direction: string): number[] {
+  const angles = [];
+  const step = direction === "clockwise" ? 10 : -10;
+  for (let i = -5; i <= 6; i++) {
+    angles.push(normalizeAngle(angle + i * step));
+  }
+  return angles;
+}
+
+function mapAnglesToLuckyValues(angles: number[]): (number | null)[] {
+  return angles.map(angle => angleToLuckyValueMapping[angle] || null);
+}
+
 function calculateSectorForOdds(firstOdd: number, secondOdd: number, thirdOdd: number): string {
   const a = Math.round(firstOdd * 10);
   const b = Math.round(secondOdd * 10);
@@ -147,10 +160,20 @@ function calculateSectorForOdds(firstOdd: number, secondOdd: number, thirdOdd: n
 
   const midpoints = calculateMidpointAngle(newA, newB);
   const chosenMidpoint = orientation === "counterclockwise" ? midpoints.midpointCounterclockwise : midpoints.midpointClockwise;
+  const finalMidpoints = calculateFinalMidpoint(chosenMidpoint, newC);
+
+  const luckyclockwise = roundUpToNextTens(finalMidpoints.finalMidpointClockwise);
+  const luckycounterclockwise = roundUpToNextTens(finalMidpoints.finalMidpointCounterclockwise);
+
+  const luckyclockwiseAngles = generateLuckyAngles(luckyclockwise, "clockwise");
+  const luckycounterclockwiseAngles = generateLuckyAngles(luckycounterclockwise, "counterclockwise");
+
+  const mappedLuckyclockwiseAngles = mapAnglesToLuckyValues(luckyclockwiseAngles);
+  const mappedLuckycounterclockwiseAngles = mapAnglesToLuckyValues(luckycounterclockwiseAngles);
 
   const smallestSector = calculateSmallestSector(newC, chosenMidpoint);
 
-  return `${smallestSector.sector} from ${smallestSector.start.toFixed(0)}° to ${smallestSector.end.toFixed(0)}° with angle ${smallestSector.angle.toFixed(0)}°`;
+  return `${smallestSector.sector} from ${smallestSector.start}° to ${smallestSector.end}° with angle ${smallestSector.angle}°`;
 }
 
 export function calculateLuckySector(homeOdds: number, drawOdds: number, awayOdds: number): { sector1: string; sector2: string } {
