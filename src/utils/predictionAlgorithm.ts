@@ -148,7 +148,11 @@ function calculateSectorForOdds(firstOdd: number, secondOdd: number, thirdOdd: n
   const B = convertUserInputToAngle(b);
   const C = convertUserInputToAngle(c);
 
+  console.log('DEBUG calculateSectorForOdds:', { firstOdd, secondOdd, thirdOdd, a, b, c, A, B, C });
+
   const orientation = calculateOrientation(A, B, C);
+  console.log('DEBUG orientation:', orientation);
+
   let newA = A, newB = B, newC = C;
 
   if (orientation === "counterclockwise") {
@@ -158,8 +162,14 @@ function calculateSectorForOdds(firstOdd: number, secondOdd: number, thirdOdd: n
     newC = shiftedAngles.newC;
   }
 
+  console.log('DEBUG new angles:', { newA, newB, newC });
+
   const midpoints = calculateMidpointAngle(newA, newB);
+  console.log('DEBUG midpoints:', midpoints);
+
   const chosenMidpoint = orientation === "counterclockwise" ? midpoints.midpointCounterclockwise : midpoints.midpointClockwise;
+  console.log('DEBUG chosenMidpoint:', chosenMidpoint);
+
   const finalMidpoints = calculateFinalMidpoint(chosenMidpoint, newC);
 
   const luckyclockwise = roundUpToNextTens(finalMidpoints.finalMidpointClockwise);
@@ -172,6 +182,7 @@ function calculateSectorForOdds(firstOdd: number, secondOdd: number, thirdOdd: n
   const mappedLuckycounterclockwiseAngles = mapAnglesToLuckyValues(luckycounterclockwiseAngles);
 
   const smallestSector = calculateSmallestSector(newC, chosenMidpoint);
+  console.log('DEBUG smallestSector:', smallestSector);
 
   return `${smallestSector.sector} from ${smallestSector.start}° to ${smallestSector.end}° with angle ${smallestSector.angle}°`;
 }
