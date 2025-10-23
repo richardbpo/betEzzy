@@ -1,10 +1,12 @@
+'use client';
+
+
 import { useEffect, useState } from 'react';
 import { Trophy, AlertCircle, CheckCircle, TrendingUp, Search, RefreshCw, Sparkles } from 'lucide-react';
-import { useAuth } from '../contexts/AuthContext';
-import { supabase } from '../lib/supabase';
-import { Match, Token, MatchResult } from '../types';
-import DashboardLayout from '../components/DashboardLayout';
-import { calculateLuckySector } from '../utils/predictionAlgorithm';
+import { useAuth } from '@/contexts/AuthProvider';
+import { supabase } from '@/lib/supabase-client';
+import { Match, Token, MatchResult } from '@/types';
+import { calculateLuckySector } from '@/utils/predictionAlgorithm';
 
 export default function PredictionsPage() {
   const { profile } = useAuth();
@@ -83,10 +85,10 @@ export default function PredictionsPage() {
     setMessage(null);
 
     try {
-      const response = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/fetch-matches`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_SUPABASE_URL}/functions/v1/fetch-matches`, {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
+          'Authorization': `Bearer ${process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY}`,
           'Content-Type': 'application/json',
         },
       });
@@ -175,7 +177,22 @@ export default function PredictionsPage() {
       const isManualMatch = selectedMatch.id.toString().startsWith('manual-');
 
       if (isManualMatch) {
-        const { error: predictionError } = await supabase.from('predictions').insert([
+        console.log('Inserting manual match prediction:', {
+          user_id: profile?.id,
+          match_id: null,
+          home_team: selectedMatch.home_team,
+          away_team: selectedMatch.away_team,
+          league: selectedMatch.league,
+          home_odds: selectedMatch.home_odds,
+          draw_odds: selectedMatch.draw_odds,
+          away_odds: selectedMatch.away_odds,
+          predicted_result: prediction,
+          confidence: calculatePrediction(selectedMatch).confidence,
+          token_used: activeTokens.id,
+          result_status: 'pending'
+        });
+
+        const { data: insertedData, error: predictionError } = await supabase.from('predictions').insert([
           {
             user_id: profile?.id,
             match_id: null,
@@ -190,7 +207,9 @@ export default function PredictionsPage() {
             token_used: activeTokens.id,
             result_status: 'pending'
           },
-        ]);
+        ]).select();
+
+        console.log('Insert result:', { insertedData, predictionError });
 
         if (predictionError) throw predictionError;
 
@@ -209,7 +228,22 @@ export default function PredictionsPage() {
           .eq('id', selectedMatch.id)
           .maybeSingle();
 
-        const { error: predictionError } = await supabase.from('predictions').insert([
+        console.log('Inserting regular match prediction:', {
+          user_id: profile?.id,
+          match_id: selectedMatch.id,
+          home_team: matchData.data?.home_team || selectedMatch.home_team,
+          away_team: matchData.data?.away_team || selectedMatch.away_team,
+          league: matchData.data?.league || selectedMatch.league,
+          home_odds: matchData.data?.home_odds || selectedMatch.home_odds,
+          draw_odds: matchData.data?.draw_odds || selectedMatch.draw_odds,
+          away_odds: matchData.data?.away_odds || selectedMatch.away_odds,
+          predicted_result: prediction,
+          confidence: calculatePrediction(selectedMatch).confidence,
+          token_used: activeTokens.id,
+          result_status: 'pending'
+        });
+
+        const { data: insertedData, error: predictionError } = await supabase.from('predictions').insert([
           {
             user_id: profile?.id,
             match_id: selectedMatch.id,
@@ -224,7 +258,9 @@ export default function PredictionsPage() {
             token_used: activeTokens.id,
             result_status: 'pending'
           },
-        ]);
+        ]).select();
+
+        console.log('Insert result:', { insertedData, predictionError });
 
         if (predictionError) throw predictionError;
 
@@ -258,8 +294,7 @@ export default function PredictionsPage() {
   };
 
   return (
-    <DashboardLayout>
-      <div className="max-w-6xl mx-auto space-y-6">
+    <div className="space-y-6">
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
@@ -607,13 +642,21 @@ export default function PredictionsPage() {
                       <div className="bg-white dark:bg-gray-800 rounded-lg p-2">
                         <p className="text-xs text-green-600 dark:text-green-500 mb-1">Sector 1:</p>
                         <p className="text-xs text-green-800 dark:text-green-300">
-                          {calculateLuckySector(selectedMatch.home_odds, selectedMatch.draw_odds, selectedMatch.away_odds).sector1}
+                          {calculateLuckySector(
+                            Math.round(selectedMatch.home_odds * 10),
+                            Math.round(selectedMatch.draw_odds * 10),
+                            Math.round(selectedMatch.away_odds * 10)
+                          ).sector}
                         </p>
                       </div>
                       <div className="bg-white dark:bg-gray-800 rounded-lg p-2">
                         <p className="text-xs text-green-600 dark:text-green-500 mb-1">Sector 2:</p>
                         <p className="text-xs text-green-800 dark:text-green-300">
-                          {calculateLuckySector(selectedMatch.home_odds, selectedMatch.draw_odds, selectedMatch.away_odds).sector2}
+                          {calculateLuckySector(
+                            Math.round(selectedMatch.away_odds * 10),
+                            Math.round(selectedMatch.draw_odds * 10),
+                            Math.round(selectedMatch.home_odds * 10)
+                          ).sector}
                         </p>
                       </div>
                     </div>
@@ -660,7 +703,6 @@ export default function PredictionsPage() {
             )}
           </div>
         </div>
-      </div>
-    </DashboardLayout>
+    </div>
   );
 }

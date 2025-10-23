@@ -1,11 +1,14 @@
+'use client';
+
 import { ReactNode, useState } from 'react';
-import { Link, useNavigate, useLocation } from 'react-router-dom';
+import Link from 'next/link';
+import { useRouter, usePathname } from 'next/navigation';
 import {
   Trophy, Home, TrendingUp, Coins, LifeBuoy, Calendar,
   Settings, LogOut, Menu, X, Sun, Moon, User, BarChart3, Search
 } from 'lucide-react';
-import { useAuth } from '../contexts/AuthContext';
-import { useTheme } from '../contexts/ThemeContext';
+import { useAuth } from '../contexts/AuthProvider';
+import { useTheme } from '../contexts/ThemeProvider';
 
 interface DashboardLayoutProps {
   children: ReactNode;
@@ -14,14 +17,14 @@ interface DashboardLayoutProps {
 export default function DashboardLayout({ children }: DashboardLayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const { profile, signOut } = useAuth();
-  const { theme, toggleTheme } = useTheme();
-  const navigate = useNavigate();
-  const location = useLocation();
+  const { theme, toggleTheme, mounted } = useTheme();
+  const router = useRouter();
+  const pathname = usePathname();
 
   const handleSignOut = async () => {
     try {
       await signOut();
-      navigate('/');
+      router.push('/');
     } catch (error) {
       console.error('Error signing out:', error);
     }
@@ -45,7 +48,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
       <aside className={`fixed inset-y-0 left-0 z-50 w-64 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 transform transition-transform lg:translate-x-0 ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}>
         <div className="flex flex-col h-full">
           <div className="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700">
-            <Link to="/dashboard" className="flex items-center space-x-2">
+            <Link href="/dashboard" className="flex items-center space-x-2">
               <div className="bg-gradient-to-br from-green-400 to-green-600 p-2 rounded-xl">
                 <Trophy className="w-6 h-6 text-white" />
               </div>
@@ -62,11 +65,11 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
           <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
             {navItems.map((item) => {
               const Icon = item.icon;
-              const isActive = location.pathname === item.path;
+              const isActive = pathname === item.path;
               return (
                 <Link
                   key={item.path}
-                  to={item.path}
+                  href={item.path}
                   onClick={() => setSidebarOpen(false)}
                   className={`flex items-center space-x-3 px-4 py-3 rounded-xl transition-colors ${
                     isActive
@@ -119,15 +122,17 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
             </button>
 
             <div className="flex items-center space-x-4 ml-auto">
-              <button
-                onClick={toggleTheme}
-                className="p-2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
-              >
-                {theme === 'dark' ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
-              </button>
+              {mounted && (
+                <button
+                  onClick={toggleTheme}
+                  className="p-2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                >
+                  {theme === 'dark' ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+                </button>
+              )}
 
               <Link
-                to="/dashboard/profile"
+                href="/dashboard/profile"
                 className="p-2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
               >
                 <User className="w-5 h-5" />
