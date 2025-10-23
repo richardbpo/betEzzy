@@ -67,13 +67,17 @@ export default function LandingPage() {
           }}></div>
         </div>
 
-        <div className="absolute right-0 top-0 bottom-0 w-1/2 hidden lg:block">
-          <div className="relative w-full h-full">
+        <div className="absolute right-0 top-0 bottom-0 w-1/2 hidden lg:flex items-center justify-end">
+          <div className="relative h-full w-full flex items-center justify-center">
+            <div className="absolute inset-0 bg-gradient-to-l from-red-800/40 via-red-700/60 to-red-600/80"></div>
             <img
-              src="https://images.pexels.com/photos/5256816/pexels-photo-5256816.jpeg?auto=compress&cs=tinysrgb&w=1200"
-              alt="Success celebration"
-              className="absolute right-0 top-1/2 -translate-y-1/2 h-full w-auto object-cover opacity-60"
+              src="https://images.pexels.com/photos/936137/pexels-photo-936137.jpeg?auto=compress&cs=tinysrgb&w=800"
+              alt="Success winners"
+              className="h-full w-full object-cover opacity-70 mix-blend-overlay"
             />
+            <div className="absolute bottom-8 right-8 bg-white px-6 py-3 rounded-full shadow-lg">
+              <span className="font-bold text-gray-900 text-lg">CASINO</span>
+            </div>
           </div>
         </div>
 
